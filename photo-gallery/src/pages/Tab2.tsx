@@ -33,6 +33,18 @@ const Tab2: React.FC = () => {
           </IonFabButton>
         </IonFab>
       </IonContent>
+
+      <IonContent>
+        <IonGrid>
+          <IonRow>
+            {photos.map((photo, index) => (
+              <IonCol size="6" key={index}>
+                <IonImg src={photo.webviewPath} />
+             </IonCol>
+            ))}
+          </IonRow>
+        </IonGrid>
+      </IonContent>
     </IonPage>
   );
 };
