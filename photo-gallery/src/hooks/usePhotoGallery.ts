@@ -31,22 +31,6 @@ export function usePhotoGallery() {
         loadSaved();
       }, [get, readFile]);
 
-    const savePicture = async (photo: CameraPhoto, fileName: string): Promise<Photo> => {
-        const base64Data = await base64FromPath(photo.webPath!);
-        const savedFile = await writeFile({
-          path: fileName,
-          data: base64Data,
-          directory: FilesystemDirectory.Data
-        });
-      
-        // Use webPath to display the new image instead of base64 since it's
-        // already loaded into memory
-        return {
-          filepath: fileName,
-          webviewPath: photo.webPath
-        };
-      };
-
 
   
     const takePhoto = async () => {
@@ -62,6 +46,41 @@ export function usePhotoGallery() {
         setPhotos(newPhotos)
         set(PHOTO_STORAGE, JSON.stringify(newPhotos));
     };
+
+    const savePicture = async (photo: CameraPhoto, fileName: string): Promise<Photo> => {
+        let base64Data: string;
+        // "hybrid" will detect Cordova or Capacitor;
+        if (isPlatform('hybrid')) {
+          const file = await readFile({
+            path: photo.path!
+          });
+          base64Data = file.data;
+        } else {
+          base64Data = await base64FromPath(photo.webPath!);
+        }
+        const savedFile = await writeFile({
+          path: fileName,
+          data: base64Data,
+          directory: FilesystemDirectory.Data
+        });
+      
+        if (isPlatform('hybrid')) {
+          // Display the new image by rewriting the 'file://' path to HTTP
+          // Details: https://ionicframework.com/docs/building/webview#file-protocol
+          return {
+            filepath: savedFile.uri,
+            webviewPath: Capacitor.convertFileSrc(savedFile.uri),
+          };
+        }
+        else {
+          // Use webPath to display the new image instead of base64 since it's
+          // already loaded into memory
+          return {
+            filepath: fileName,
+            webviewPath: photo.webPath
+          };
+        }
+      };
   
     return {
         photos,
