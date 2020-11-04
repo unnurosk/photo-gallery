@@ -22,3 +22,8 @@ export function usePhotoGallery() {
       takePhoto
     };
   }
+
+  export interface Photo {
+    filepath: string;
+    webviewPath?: string;
+  }
