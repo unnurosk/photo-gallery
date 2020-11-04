@@ -42,6 +42,7 @@ export function usePhotoGallery() {
     const savedFileImage = await savePicture(cameraPhoto, fileName);
     const newPhotos = [savedFileImage, ...photos];
         setPhotos(newPhotos)
+        set(PHOTO_STORAGE, JSON.stringify(newPhotos));
     };
   
     return {
