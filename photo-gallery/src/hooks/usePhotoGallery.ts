@@ -15,6 +15,22 @@ export function usePhotoGallery() {
     const { deleteFile, getUri, readFile, writeFile } = useFilesystem();
     const { get, set } = useStorage();
 
+    useEffect(() => {
+        const loadSaved = async () => {
+          const photosString = await get(PHOTO_STORAGE);
+          const photos = (photosString ? JSON.parse(photosString) : []) as Photo[];
+          for (let photo of photos) {
+            const file = await readFile({
+              path: photo.filepath,
+              directory: FilesystemDirectory.Data
+            });
+            photo.webviewPath = `data:image/jpeg;base64,${file.data}`;
+          }
+          setPhotos(photos);
+        };
+        loadSaved();
+      }, [get, readFile]);
+
     const savePicture = async (photo: CameraPhoto, fileName: string): Promise<Photo> => {
         const base64Data = await base64FromPath(photo.webPath!);
         const savedFile = await writeFile({
@@ -30,6 +46,8 @@ export function usePhotoGallery() {
           webviewPath: photo.webPath
         };
       };
+
+
   
     const takePhoto = async () => {
       const cameraPhoto = await getPhoto({
