@@ -17,10 +17,18 @@ export function usePhotoGallery() {
         source: CameraSource.Camera,
         quality: 100
       });
+
+    const fileName = new Date().getTime() + '.jpeg';
+    const newPhotos = [{
+        filepath: fileName,
+        webviewPath: cameraPhoto.webPath
+        }, ...photos];
+        setPhotos(newPhotos)
     };
   
     return {
-      takePhoto
+        photos,
+        takePhoto
     };
   }
 
