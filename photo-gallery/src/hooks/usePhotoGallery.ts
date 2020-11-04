@@ -36,10 +36,8 @@ export function usePhotoGallery() {
       });
 
     const fileName = new Date().getTime() + '.jpeg';
-    const newPhotos = [{
-        filepath: fileName,
-        webviewPath: cameraPhoto.webPath
-        }, ...photos];
+    const savedFileImage = await savePicture(cameraPhoto, fileName);
+    const newPhotos = [savedFileImage, ...photos];
         setPhotos(newPhotos)
     };
   
