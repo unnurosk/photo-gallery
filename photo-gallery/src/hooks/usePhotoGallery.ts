@@ -5,12 +5,15 @@ import { useStorage } from '@ionic/react-hooks/storage';
 import { isPlatform } from '@ionic/react';
 import { CameraResultType, CameraSource, CameraPhoto, Capacitor, FilesystemDirectory } from "@capacitor/core";
 
+const PHOTO_STORAGE = "photos";
+
 
 export function usePhotoGallery() {
 
     const { getPhoto } = useCamera();
     const [photos, setPhotos] = useState<Photo[]>([]);
     const { deleteFile, getUri, readFile, writeFile } = useFilesystem();
+    const { get, set } = useStorage();
 
     const savePicture = async (photo: CameraPhoto, fileName: string): Promise<Photo> => {
         const base64Data = await base64FromPath(photo.webPath!);
