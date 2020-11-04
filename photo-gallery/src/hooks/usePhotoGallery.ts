@@ -10,6 +10,7 @@ export function usePhotoGallery() {
 
     const { getPhoto } = useCamera();
     const [photos, setPhotos] = useState<Photo[]>([]);
+    const { deleteFile, getUri, readFile, writeFile } = useFilesystem();
   
     const takePhoto = async () => {
       const cameraPhoto = await getPhoto({
